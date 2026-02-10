@@ -1,0 +1,8 @@
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.csproj.AssemblyReference.cache
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/rpswa.dswa.cache.json
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.GeneratedMSBuildEditorConfig.editorconfig
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.AssemblyInfoInputs.cache
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.AssemblyInfo.cs
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.csproj.CoreCompileInputs.cache
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.MvcApplicationPartsAssemblyInfo.cs
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.MvcApplicationPartsAssemblyInfo.cache
