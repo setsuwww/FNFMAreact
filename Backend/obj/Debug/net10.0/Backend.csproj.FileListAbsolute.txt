@@ -6,3 +6,4 @@
 /Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.csproj.CoreCompileInputs.cache
 /Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.MvcApplicationPartsAssemblyInfo.cs
 /Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.MvcApplicationPartsAssemblyInfo.cache
+/Users/pengkoralakatir/Project/Areact/Backend/obj/Debug/net10.0/Backend.sourcelink.json
