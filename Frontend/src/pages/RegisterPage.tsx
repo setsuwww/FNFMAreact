@@ -1,60 +1,85 @@
 import { useState } from "react";
-import { register } from "../services/auth";
+import { UserService } from "../services/user_service";
+
+const userService = new UserService();
 
 export default function RegisterPage() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    async function handleRegister() {
-        try {
-            await register(username, password);
-            alert("Register sukses, silakan login");
-            window.location.href = "/login";
-        } catch {
-            alert("Register gagal");
-        }
+  async function handleRegister() {
+    if (!email || !password) {
+      alert("Email dan password harus diisi");
+      return;
     }
 
-    return (
-        <div className="min-h-screen bg-radial from-blue-900 to-gray-900 flex items-center justify-center bg-gray-100">
-            <div className="bg-white/25 backdrop-blur-lg border border-white/70 ring ring-gray-900 p-8 rounded-xl shadow-md w-96">
-                <h1 className="text-2xl font-bold mb-6 text-center text-white">
-                    Register
-                </h1>
+    setLoading(true);
+    try {
+      // default role = "User"
+      await userService.register({ username, email, password, role: "User" });
+      alert("Register sukses, silakan login");
+      window.location.href = "/login";
+    } catch (err: any) {
+      alert("Register gagal: " + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
+  }
 
-                <div className="flex flex-col space-y-1 text-gray-800 font-semibold">
-                    <label htmlFor="email" className="mb-2">Email</label>
-                    <input
-                        className="w-full p-3 rounded-lg mb-4 input-class"
-                        placeholder="Username"
-                        onChange={e => setUsername(e.target.value)}
-                    />
-                </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="w-[380px] rounded-2xl bg-gradient-to-b from-[#111118] to-[#0d0d14]
+                      backdrop-blur-md shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)]
+                      border border-[#22222b] px-8 py-10">
+        <h1 className="text-2xl font-bold text-white text-center mb-8">
+          Register
+        </h1>
 
-                <div className="flex flex-col space-y-1 text-gray-800 font-semibold">
-                    <label htmlFor="password" className="mb-2">Password</label>
-                    <input
-                        type="password"
-                        className="w-full p-3 rounded-lg mb-6 input-class"
-                        placeholder="Password"
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
+        <input
+          type="username"
+          placeholder="Username"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          className="w-full mb-4 px-4 py-3 rounded-lg bg-[#1c1c28] border border-[#33334a]
+                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-                <button
-                    onClick={handleRegister}
-                    className="w-full py-3 rounded-lg bg-gradient-to-b from-gray-800 to-gray-700 border-t border-gray-500 ring ring-gray-800 text-white"
-                >
-                    Register
-                </button>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          className="w-full mb-4 px-4 py-3 rounded-lg bg-[#1c1c28] border border-[#33334a]
+                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-                <p className="text-center text-sm mt-4">
-                    Already have an account?{" "}
-                    <a href="/login" className="text-blue-800">
-                        Login
-                    </a>
-                </p>
-            </div>
-        </div>
-    );
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          className="w-full mb-6 px-4 py-3 rounded-lg bg-[#1c1c28] border border-[#33334a]
+                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          onClick={handleRegister}
+          disabled={loading}
+          className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-700 to-blue-500
+                     text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+        >
+          {loading ? "Loading..." : "Register"}
+        </button>
+
+        <p className="mt-6 text-center text-sm text-gray-400">
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            Login
+          </a>
+        </p>
+      </div>
+    </div>
+  );
 }

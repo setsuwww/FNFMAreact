@@ -1,56 +1,67 @@
 import { useState } from "react";
-import { login } from "../services/auth";
+import { UserService } from "../services/user_service";
+
+const userService = new UserService();
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
+    setLoading(true);
     try {
-      const res = await login(username, password);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("username", res.data.username);
-      alert(`Welcome ${res.data.username}`);
-      // bisa redirect ke dashboard
+      const res = await userService.login(email, password);
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("email", res.email);
+      alert(`Welcome ${res.email}`);
       window.location.href = "/dashboard";
-    } catch {
-      alert("Login gagal");
+    } catch (err: any) {
+      alert("Login gagal: " + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center
-        bg-gradient-to-br from-[#0f172a] via-[#020617] to-black">
-      <div className="w-[380px] rounded-2xl bg-white/80 backdrop-blur-xl
-        shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] border border-white/40 px-8 py-10">
-
-        <h1 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="w-[380px] rounded-2xl bg-gradient-to-b from-[#111118] to-[#0d0d14]
+                      backdrop-blur-md shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)]
+                      border border-[#22222b] px-8 py-10">
+        <h1 className="text-2xl font-bold text-white text-center mb-8">
           Login
         </h1>
 
         <input
-          className="w-full rounded-lg bg-white/70 border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 mb-4"
-          placeholder="Username"
-          onChange={e => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          className="w-full mb-4 px-4 py-3 rounded-lg bg-[#1c1c28] border border-[#33334a]
+                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <input
           type="password"
-          className="w-full rounded-lg bg-white/70 border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 mb-6"
           placeholder="Password"
+          value={password}
           onChange={e => setPassword(e.target.value)}
+          className="w-full mb-6 px-4 py-3 rounded-lg bg-[#1c1c28] border border-[#33334a]
+                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
           onClick={handleLogin}
-          className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 py-3 text-white font-medium hover:opacity-90 transition"
+          disabled={loading}
+          className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-700 to-blue-500
+                     text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-400">
           Belum punya akun?{" "}
-          <a href="/register" className="ml-1 text-blue-600 hover:underline">
+          <a href="/register" className="text-blue-500 hover:underline">
             Register
           </a>
         </p>

@@ -1,3 +1,5 @@
+using BCrypt.Net;
+
 namespace Backend.Helpers;
 
 public static class PasswordHelper

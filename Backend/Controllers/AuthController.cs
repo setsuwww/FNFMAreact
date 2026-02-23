@@ -23,39 +23,34 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        try
+        if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
+            return BadRequest("Username atau password kosong");
+
+        if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
+            return BadRequest("Username sudah ada");
+
+        var user = new User
         {
-            if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
-                return BadRequest("Username atau password kosong");
+            Username = dto.Username,
+            Email = dto.Email,
+            Password = PasswordHelper.Hash(dto.Password),
+            Role = "User"
+        };
 
-            if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
-                return BadRequest("Username sudah ada");
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
 
-            var user = new User
-            {
-                Username = dto.Username,
-                PasswordHash = PasswordHelper.Hash(dto.Password)
-            };
-
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
-
-            return Ok("Register sukses");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message, stack = ex.StackTrace });
-        }
+        return Ok("Register sukses");
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
         if (user == null || !PasswordHelper.Verify(dto.Password, user.PasswordHash))
             return Unauthorized("Username atau password salah");
 
         var token = JwtHelper.GenerateToken(user, _config);
-        return Ok(new { token, username = user.Username });
+        return Ok(new { token, email = user.Email, role = user.Role });
     }
 }
