@@ -1,35 +1,42 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
+using Backend.Helpers;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Backend;
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-if (string.IsNullOrEmpty(connectionString))
+public class Program
 {
-    throw new Exception("DATABASE_URL environment variable is not set.");
-}
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+            ?? throw new Exception("DATABASE_URL is not set.");
 
-builder.Services.AddControllers();
+        var npgsqlConn = PostgresHelper.ConvertPostgresUrl(databaseUrl);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(npgsqlConn));
+
+        builder.Services.AddControllers();
+
+        builder.Services.AddCors(options =>
         {
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            options.AddPolicy("AllowFrontend",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
         });
-});
 
-var app = builder.Build();
+        var app = builder.Build();
 
-app.UseCors("AllowFrontend");
+        app.UseCors("AllowFrontend");
 
-app.MapControllers();
+        app.MapControllers();
 
-app.Run();
+        app.Run();
+    }
+}
