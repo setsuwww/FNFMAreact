@@ -4,6 +4,7 @@ import type { AxiosInstance } from "axios";
 export interface LoginResponse {
   token: string;
   email: string;
+  role: string | "User" | "Admin";
 }
 
 export class UserService {

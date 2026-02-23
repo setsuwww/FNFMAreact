@@ -1,7 +1,9 @@
+using Backend.Models;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using Backend.Models;
 using System.Text;
 
 namespace Backend.Helpers;
@@ -12,8 +14,9 @@ public static class JwtHelper
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, user.Email),
-            new Claim("role", user.Role.ToString())
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
@@ -23,7 +26,7 @@ public static class JwtHelper
             issuer: config["Jwt:Issuer"],
             audience: config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(4),
+            expires: DateTime.Now.AddHours(8),
             signingCredentials: creds
         );
 

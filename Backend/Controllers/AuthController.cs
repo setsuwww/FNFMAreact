@@ -23,18 +23,21 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
-            return BadRequest("Username atau password kosong");
+        if (string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.Password) || string.IsNullOrEmpty(dto.Username))
+            return BadRequest("Username, email, atau password kosong");
+
+        if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+            return BadRequest("Email sudah terdaftar");
 
         if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
-            return BadRequest("Username sudah ada");
+            return BadRequest("Username sudah terpakai");
 
         var user = new User
         {
             Username = dto.Username,
             Email = dto.Email,
             Password = PasswordHelper.Hash(dto.Password),
-            Role = "User"
+            Role = UserRole.User // default role
         };
 
         _db.Users.Add(user);
@@ -44,13 +47,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto dto)
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-        if (user == null || !PasswordHelper.Verify(dto.Password, user.PasswordHash))
-            return Unauthorized("Username atau password salah");
+        if (user == null || !PasswordHelper.Verify(dto.Password, user.Password))
+            return Unauthorized("Email atau password salah");
 
         var token = JwtHelper.GenerateToken(user, _config);
-        return Ok(new { token, email = user.Email, role = user.Role });
+
+        return Ok(new { token, email = user.Email, username = user.Username, role = user.Role.ToString() });
     }
 }

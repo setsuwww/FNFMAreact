@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { UserService } from "../services/user_service";
+import { useNavigate } from "react-router-dom";
 
 const userService = new UserService();
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,8 +16,18 @@ export default function LoginPage() {
       const res = await userService.login(email, password);
       localStorage.setItem("token", res.token);
       localStorage.setItem("email", res.email);
+      localStorage.setItem("role", res.role);
+
       alert(`Welcome ${res.email}`);
-      window.location.href = "/dashboard";
+
+      // React Router navigation
+      if (res.role === "Admin") {
+        navigate("/dashboard/admin");
+      } else if (res.role === "User") {
+        navigate("/dashboard/user");
+      } else {
+        navigate("/login");
+      }
     } catch (err: any) {
       alert("Login gagal: " + (err.response?.data?.message || err.message));
     } finally {
