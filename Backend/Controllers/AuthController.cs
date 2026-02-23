@@ -21,21 +21,31 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
-            return BadRequest("Username sudah ada");
-
-        var user = new User
+        try
         {
-            Username = dto.Username,
-            PasswordHash = PasswordHelper.Hash(dto.Password)
-        };
+            if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
+                return BadRequest("Username atau password kosong");
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+            if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
+                return BadRequest("Username sudah ada");
 
-        return Ok("Register sukses");
+            var user = new User
+            {
+                Username = dto.Username,
+                PasswordHash = PasswordHelper.Hash(dto.Password)
+            };
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+
+            return Ok("Register sukses");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message, stack = ex.StackTrace });
+        }
     }
 
     [HttpPost("login")]
