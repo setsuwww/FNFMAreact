@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/pengkoralakatir/Project/Areact/Backend/Backend.csproj": {}
+    "/Users/pengkoralakatir/Project/FNFMAreact/Backend/Backend.csproj": {}
   },
   "projects": {
-    "/Users/pengkoralakatir/Project/Areact/Backend/Backend.csproj": {
+    "/Users/pengkoralakatir/Project/FNFMAreact/Backend/Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/pengkoralakatir/Project/Areact/Backend/Backend.csproj",
+        "projectUniqueName": "/Users/pengkoralakatir/Project/FNFMAreact/Backend/Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "/Users/pengkoralakatir/Project/Areact/Backend/Backend.csproj",
+        "projectPath": "/Users/pengkoralakatir/Project/FNFMAreact/Backend/Backend.csproj",
         "packagesPath": "/Users/pengkoralakatir/.nuget/packages/",
-        "outputPath": "/Users/pengkoralakatir/Project/Areact/Backend/obj/",
+        "outputPath": "/Users/pengkoralakatir/Project/FNFMAreact/Backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/pengkoralakatir/.nuget/NuGet/NuGet.Config"
@@ -75,6 +75,10 @@
             "MySql.EntityFrameworkCore": {
               "target": "Package",
               "version": "[10.0.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[10.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
