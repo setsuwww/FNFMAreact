@@ -14,7 +14,7 @@ public class ActivityLog
     public int UserId { get; set; }
     public User User { get; set; }
 
-    public string TargetName { get; set; } = ""; // file/folder name
+    public string TargetName { get; set; } = "";
     public ActivityType ActivityType { get; set; }
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 }
