@@ -75,7 +75,7 @@ export default function UserDashboard() {
           {sidebarOpen ? (
             <div className="flex items-center space-x-2">
               <HardDrive className="w-8 h-8 text-blue-400" />
-              <span className="font-bold text-xl">FileSpace</span>
+              <span className="font-bold text-xl">Areact</span>
             </div>
           ) : (
             <HardDrive className="w-8 h-8 text-blue-400 mx-auto" />
